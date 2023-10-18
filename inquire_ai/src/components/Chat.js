@@ -14,6 +14,12 @@ const Chat = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (userInput.trim() === '') {
+            alert('Please input a message.');
+            setUserInput("");
+            return;
+        }
     
         setMessages(prev => [...prev, { sender: 'user', text: userInput }]);
         setLoading(true);
@@ -71,7 +77,8 @@ const Chat = () => {
                 />
                 <button 
                     className='chat-screen-button'
-                    type="submit">Send</button>
+                    type="submit"
+                    disabled={loading}>Send</button>
             </form>
         </div>
     );
