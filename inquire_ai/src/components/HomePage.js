@@ -75,7 +75,8 @@ const HomePage = () => {
     return (
         <div className="container">
             <div className="box">
-                <h1 className="header">Welcome to My Web App</h1>
+                <h1 className="header">InquireAI</h1>
+                <h2 className="header">Research Assistant powered by GPT4</h2>
                 <form onSubmit={handleSubmit}>
                     <input 
                         type="file" 

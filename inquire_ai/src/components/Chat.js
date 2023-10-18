@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import '../components/Chat.css';
 
 const Chat = () => {
@@ -6,6 +6,11 @@ const Chat = () => {
         { sender: 'chatbot', text: 'Ask me anything about this paper!' }]); 
     const [userInput, setUserInput] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const messagesEndRef = useRef(null);
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -35,6 +40,10 @@ const Chat = () => {
     
     return (
         <div className="chat-container">
+            <div className="header-container">
+                <h1 className="header">InquireAI</h1>
+                <h2 className="header">Research Assistant powered by GPT4</h2>
+            </div>
             <div className="messages">
                 {messages.map((message, index) => (
                     <div key={index} className={`message ${message.sender}`}>
@@ -50,6 +59,7 @@ const Chat = () => {
                     </div>
                 }
             </div>
+            <div ref={messagesEndRef}></div>
             <form onSubmit={handleSubmit} className="chat-screen-form">
                 <input 
                     className="chat-screen-input"
