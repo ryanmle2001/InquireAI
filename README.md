@@ -54,4 +54,7 @@ serve -s build -l 3000
 ```
 
 ## Example
+<p align="center">
+  <img src="assets/example1.png" alt="example">
+</p>
 
