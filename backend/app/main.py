@@ -33,6 +33,8 @@ async def home():
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith('.pdf'):
+        raise HTTPException(status_code=400, detail="File must be a PDF.")
     try:
         file_path = f"uploads/{file.filename}"
         with open(file_path, "wb") as buffer:

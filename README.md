@@ -47,10 +47,9 @@ cd inquire_ai
 npm install  
 ```
 
-Build React and serve it
+Launch UI
 ```
-npm run build
-serve -s build -l 3000
+npm start
 ```
 
 ## Example
