@@ -53,7 +53,12 @@ const Chat = () => {
             <div className="messages">
                 {messages.map((message, index) => (
                     <div key={index} className={`message ${message.sender}`}>
-                        {message.text}
+                        {message.text.split('\n').map((line, lineIndex) => (
+                            <span key={lineIndex}>
+                                {line}
+                                {lineIndex !== message.text.split('\n').length - 1 && <br />}
+                            </span>
+                        ))}
                     </div>
                 ))}
                 {loading && 
@@ -76,7 +81,6 @@ const Chat = () => {
                     disabled={loading}
                 />
                 <button 
-                    className='chat-screen-button'
                     type="submit"
                     disabled={loading}>Send</button>
             </form>
