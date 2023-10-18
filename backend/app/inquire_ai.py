@@ -218,7 +218,7 @@ def generate_online_video_transcript(cursor: evadb.EvaDBCursor) -> str:
     cursor.drop_table("youtube_video_text", if_exists=True).execute()
     cursor.query(
         "CREATE TABLE IF NOT EXISTS youtube_video_text AS SELECT SpeechRecognizer(audio) FROM youtube_video;"
-    ).execute()
+    ).execute()x
     print("✅ Video analysis completed.")
 
     raw_transcript_string = (
@@ -322,6 +322,7 @@ def generate_response(cursor: evadb.EvaDBCursor, question: str) -> str:
     """
     # generate summary
     if len(cursor.table("Transcript").select("text").df()["transcript.text"]) == 1:
+        # TODO: checks if there is something in the text 
         return (
             cursor.table("Transcript")
             .select(f"ChatGPT('{question}', text)")
@@ -410,7 +411,7 @@ if __name__ == "__main__":
             if user_input["from_youtube"]:
                 # download youtube video online if the video disabled transcript
                 download_youtube_video_from_link(user_input["video_link"])
-
+            #TODO: here 
             # generate video transcript if the transcript is not availble online or if the video is local
             raw_transcript_string = (
                 generate_online_video_transcript(cursor)
@@ -424,8 +425,9 @@ if __name__ == "__main__":
             partitioned_transcript = partition_transcript(raw_transcript_string)
             df = pd.DataFrame(partitioned_transcript)
             df.to_csv(TRANSCRIPT_PATH)
-
+        
         # load chunked transcript into table
+        #TODO: creates table
         cursor.drop_table("Transcript", if_exists=True).execute()
         cursor.query(
             """CREATE TABLE IF NOT EXISTS Transcript (text TEXT(50));"""
@@ -442,6 +444,7 @@ if __name__ == "__main__":
             else:
                 # Generate response with chatgpt udf
                 print("⏳ Generating response (may take a while)...")
+                # TODO: make query to db here 
                 response = generate_response(cursor, question)
                 print("+--------------------------------------------------+")
                 print("✅ Answer:")

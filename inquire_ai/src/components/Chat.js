@@ -2,35 +2,35 @@ import React, { useState } from 'react';
 import '../components/Chat.css';
 
 const Chat = () => {
-    const [messages, setMessages] = useState([]); // To store chat messages
-    const [userInput, setUserInput] = useState(''); // To store user input
+    const [messages, setMessages] = useState([
+        { sender: 'chatbot', text: 'Ask me anything about this paper!' }]); 
+    const [userInput, setUserInput] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
     
-        // Append user message to chat
         setMessages(prev => [...prev, { sender: 'user', text: userInput }]);
-    
+        setLoading(true);
         try {
-            //TODO get response from FastAPI
-            const response = await fetch('/chat', {
+            console.log("userInput: ", userInput)
+            const response = await fetch('http://localhost:8000/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message: userInput })
+                body: JSON.stringify({ question: userInput })
             });
     
             const data = await response.json();
-            
-            // Append chatbot's response to chat
-            setMessages(prev => [...prev, { sender: 'chatbot', text: data.response }]);
+            console.log(data.bot_response); 
+            setMessages(prev => [...prev, { sender: 'chatbot', text: data.bot_response }]);
         } catch (error) {
+            alert('Session expired: please log onto app again with your PDF and OpenAI API key.');
             console.error('Error sending message:', error);
         }
-    
-        // Clear user input field
-        setUserInput('');
+        setLoading(false);
+        setUserInput("");
     };
     
     return (
@@ -41,6 +41,14 @@ const Chat = () => {
                         {message.text}
                     </div>
                 ))}
+                {loading && 
+                    <div className="message chatbot">
+                        <div className="loading-container">
+                            <div className="spinner"></div>
+                            ⏳ Generating response (may take a while)...
+                        </div>
+                    </div>
+                }
             </div>
             <form onSubmit={handleSubmit} className="chat-screen-form">
                 <input 
@@ -49,8 +57,8 @@ const Chat = () => {
                     value={userInput}
                     onChange={e => setUserInput(e.target.value)}
                     placeholder="Type your message..."
+                    disabled={loading}
                 />
-                //TODO change colors
                 <button 
                     className='chat-screen-button'
                     type="submit">Send</button>

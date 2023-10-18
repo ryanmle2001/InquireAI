@@ -7,8 +7,11 @@ This app is powered by [EvaDB](https://github.com/georgia-tech-db/eva), a Python
 
 ## Setup
 Ensure that the local Python version is >= 3.8. 
+
+### Backend Setup 
 Create and activate virtual environment:
 ```
+cd backend
 python -m venv venv 
 source venv/bin/activate 
 ```
@@ -19,16 +22,29 @@ Install the required libraries:
 pip install -r requirements.txt
 ```
 
+Run the backend:
+
+```
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
 To deactivate the virtual environment:
 
 ```
 deactivate
 ```
 
-## Usage
-Run script: 
-```bat
-python run.py
+### Frontend Setup 
+Install npm packages:
+```
+cd inquire_ai
+npm install  
+```
+
+Build React and serve it
+```
+npm run build
+serve -s build -l 3000
 ```
 
 ## Example

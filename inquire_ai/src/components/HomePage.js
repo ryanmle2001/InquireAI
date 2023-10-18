@@ -8,7 +8,8 @@ const HomePage = () => {
     const [isFileValid, setIsFileValid] = useState(false);
     const [apiKey, setApiKey] = useState('');
     const [isApiKeyValid, setIsApiKeyValid] = useState(false);
-  
+    const [isAccessGranted, setIsAccessGranted] = useState(false);
+
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
     };
@@ -17,45 +18,56 @@ const HomePage = () => {
         e.preventDefault();
     
         if (!file) return;
-    
+
         const formData = new FormData();
         formData.append('file', file);
         
-        //TODO update this endpoint
-        const response = await fetch('/validate-key', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ apiKey })
-          });
-      
-          const data = await response.json();
-      
-        if (data.valid) {
-            setIsApiKeyValid(true);
-        } else {
-            alert('OpenAI API key is not valid.');
-        }
-      
         try {
-            //TODO include response here
-            const response = await fetch('https://your-server-url/upload/', {
+            const response = await fetch('http://localhost:8000/validate-key', {
                 method: 'POST',
-                body: formData
-            });
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ apiKey })
+              });
     
             const data = await response.json();
             if (data.valid) {
+                setIsApiKeyValid(true);
+            } else {
+                setIsApiKeyValid(false);
+                alert('OpenAI API key is not valid.');
+            }
+        } catch (error) {
+            alert('Error inputting OpenAI API key:', error);
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.valid) {
                 setIsFileValid(true);
             } else {
+                setIsFileValid(false);
                 alert('Failed to upload file: ', data.message);
             }
         } catch (error) {
             alert('Error uploading file:', error);
         }
     };
-    const navigateToChat = () => {
+
+    const navigateToChat = async () => {
+        const formData = new FormData();
+        formData.append('file', file);    
+            
+        await fetch('http://localhost:8000/create', {
+            method: 'POST',
+            body: formData
+        });
         navigate('/chat');
     };
     
