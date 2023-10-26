@@ -84,7 +84,7 @@ const HomePage = () => {
                         required
                     />
                     <input
-                        type="text"
+                        type="password"
                         placeholder="Paste your OpenAI API key here"
                         value={apiKey}
                         onChange={(e) => setApiKey(e.target.value)}
